@@ -1,4 +1,7 @@
 
+using GameDevHub.Api.DTOs;
+using GameDevHub.Api.Services;
+
 namespace GameDevHub.Api
 {
     public class Program
@@ -8,17 +11,19 @@ namespace GameDevHub.Api
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-
+            builder.Services.AddSingleton<ProjectService>();
             builder.Services.AddControllers();
-            // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-            builder.Services.AddOpenApi();
+            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+            builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddSwaggerGen();
 
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
-                app.MapOpenApi();
+                app.UseSwagger();
+                app.UseSwaggerUI();
             }
 
             app.UseHttpsRedirection();
@@ -27,6 +32,14 @@ namespace GameDevHub.Api
 
 
             app.MapControllers();
+            app.MapPost("/projects",
+            (ProjectService service,
+            CreateProjectRequest request) =>
+            {
+                var project = service.Create(request);
+
+                return Results.Created($"/projects/{project.Id}", project);
+            });
 
             app.Run();
         }
