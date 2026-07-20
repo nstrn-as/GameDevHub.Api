@@ -32,6 +32,7 @@ namespace GameDevHub.Api
 
 
             app.MapControllers();
+
             app.MapPost("/projects",
             (ProjectService service,
             CreateProjectRequest request) =>
@@ -39,6 +40,12 @@ namespace GameDevHub.Api
                 var project = service.Create(request);
 
                 return Results.Created($"/projects/{project.Id}", project);
+            });
+
+            app.MapGet("/projects",
+            (ProjectService service) =>
+            {
+                return service.GetAll();
             });
 
             app.Run();
