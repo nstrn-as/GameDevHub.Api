@@ -6,7 +6,7 @@ namespace GameDevHub.Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ProjectsController: ControllerBase
+    public class ProjectsController : ControllerBase
     {
         private readonly ProjectService _projectService;
         public ProjectsController(ProjectService projectService)
@@ -20,5 +20,11 @@ namespace GameDevHub.Api.Controllers
             return Ok(_projectService.GetAll());
         }
 
+        [HttpPost]
+        public IActionResult Create(CreateProjectRequest request)
+        {
+            var project = _projectService.Create(request);
+            return Created($"/api/projects/{project.Id}", project);
+        }
     }
 }
