@@ -20,6 +20,18 @@ namespace GameDevHub.Api.Controllers
             return Ok(_projectService.GetAll());
         }
 
+        [HttpGet("{id}")]
+        public IActionResult GetById(int id)
+        {
+            var project = _projectService.GedById(id);
+            if (project == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(project);
+        }
+
         [HttpPost]
         public IActionResult Create(CreateProjectRequest request)
         {

@@ -30,4 +30,9 @@ public class ProjectService
     {
         return _projects;
     }
+
+    public Project? GedById(int id)
+    {
+        return _projects.FirstOrDefault(p => p.Id == id);
+    }
 }
