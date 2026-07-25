@@ -1,16 +1,24 @@
-﻿using GameDevHub.Api.Services;
+﻿using GameDevHub.Api.DTOs;
+using GameDevHub.Api.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameDevHub.Api.Controllers
 {
     [ApiController]
-    [Route("api/[controller")]
+    [Route("api/[controller]")]
     public class ProjectsController: ControllerBase
     {
-        [HttpGet]
-        public IActionResult GetAll(ProjectService service)
+        private readonly ProjectService _projectService;
+        public ProjectsController(ProjectService projectService)
         {
-            return Ok(service.GetAll());
+            _projectService = projectService;
         }
+
+        [HttpGet]
+        public IActionResult GetAll()
+        {
+            return Ok(_projectService.GetAll());
+        }
+
     }
 }
