@@ -35,4 +35,18 @@ public class ProjectService
     {
         return _projects.FirstOrDefault(p => p.Id == id);
     }
+
+    public bool Delete(int id)
+    {
+        var project = _projects.FirstOrDefault(p => p.Id == id);
+
+        if (project == null)
+        {
+            return false;
+        }
+
+        _projects.Remove(project);
+
+        return true;
+    }
 }

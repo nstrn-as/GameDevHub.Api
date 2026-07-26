@@ -38,5 +38,18 @@ namespace GameDevHub.Api.Controllers
             var project = _projectService.Create(request);
             return Created($"/api/projects/{project.Id}", project);
         }
+
+        [HttpDelete("{id}")]
+        public IActionResult Delete(int id)
+        {
+            var deleted  = _projectService.Delete(id);
+
+            if (!deleted)
+            {
+                return NotFound();
+            }
+
+            return NoContent();
+        }
     }
 }
