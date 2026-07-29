@@ -1,17 +1,22 @@
-﻿using GameDevHub.Api.DTOs;
+﻿using GameDevHub.Api.Data;
+using GameDevHub.Api.DTOs;
 using GameDevHub.Api.Models;
 
 namespace GameDevHub.Api.Services;
 
 public class ProjectService
 {
-    private readonly List<Project> _projects = [];
+    private readonly AppDbContext _context;
+
+    public ProjectService(AppDbContext context)
+    {
+        _context = context;
+    }
 
     public Project Create(CreateProjectRequest request)
     {
         var project = new Project
         {
-            Id = _projects.Count + 1,
             Title = request.Title,
             Description = request.Description,
             Engine = request.Engine,
@@ -21,31 +26,35 @@ public class ProjectService
             LastModified = DateTime.Now
         };
 
-        _projects.Add(project);
+        _context.Projects.Add(project);
+
+        _context.SaveChanges();
 
         return project;
     }
 
-    public List<Project> GetAll()
+    public IEnumerable<Project> GetAll()
     {
-        return _projects;
+        return _context.Projects.ToList();
     }
 
-    public Project? GedById(int id)
+    public Project? GetById(int id)
     {
-        return _projects.FirstOrDefault(p => p.Id == id);
+        return _context.Projects.FirstOrDefault(p => p.Id == id);
     }
 
     public bool Delete(int id)
     {
-        var project = _projects.FirstOrDefault(p => p.Id == id);
+        var context = _context.Projects.FirstOrDefault(p => p.Id == id);
 
-        if (project == null)
+        if (context == null)
         {
             return false;
         }
 
-        _projects.Remove(project);
+        _context.Projects.Remove(context);
+
+        _context.SaveChanges();
 
         return true;
     }
