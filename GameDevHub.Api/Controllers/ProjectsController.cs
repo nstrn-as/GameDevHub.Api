@@ -9,6 +9,7 @@ namespace GameDevHub.Api.Controllers
     public class ProjectsController : ControllerBase
     {
         private readonly ProjectService _projectService;
+        
         public ProjectsController(ProjectService projectService)
         {
             _projectService = projectService;
@@ -17,7 +18,9 @@ namespace GameDevHub.Api.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            return Ok(_projectService.GetAll());
+            var projects = _projectService.GetAll();
+            var response = projects.Select(_projectService.ToResponse).ToList();
+            return Ok(response);
         }
 
         [HttpGet("{id}")]
@@ -29,14 +32,14 @@ namespace GameDevHub.Api.Controllers
                 return NotFound();
             }
 
-            return Ok(project);
+            return Ok(_projectService.ToResponse(project));
         }
 
         [HttpPost]
         public IActionResult Create(CreateProjectRequest request)
         {
             var project = _projectService.Create(request);
-            return Created($"/api/projects/{project.Id}", project);
+            return Created($"/api/projects/{project.Id}", _projectService.ToResponse(project));
         }
 
         [HttpDelete("{id}")]

@@ -49,4 +49,16 @@ public class ProjectService
 
         return true;
     }
+
+    public ProjectResponse ToResponse(Project project)
+    {
+        return new ProjectResponse
+        {
+            Id = project.Id,
+            Title = project.Title,
+            Description = project.Description,
+            Engine = project.Engine,
+            Genre = project.Genre
+        };
+    }
 }
