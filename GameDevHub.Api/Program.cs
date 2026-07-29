@@ -1,6 +1,8 @@
 
 using GameDevHub.Api.DTOs;
 using GameDevHub.Api.Services;
+using GameDevHub.Api.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace GameDevHub.Api
 {
@@ -12,6 +14,8 @@ namespace GameDevHub.Api
 
             // Add services to the container.
             builder.Services.AddSingleton<ProjectService>();
+            builder.Services.AddDbContext<AppDbContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
