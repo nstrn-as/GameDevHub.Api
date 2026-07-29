@@ -8,44 +8,47 @@ namespace GameDevHub.Api.Controllers
     [Route("api/[controller]")]
     public class ProjectsController : ControllerBase
     {
-        private readonly ProjectService _projectService;
+        private readonly ProjectService _service;
         
-        public ProjectsController(ProjectService projectService)
+        public ProjectsController(ProjectService service)
         {
-            _projectService = projectService;
+            _service = service;
         }
 
         [HttpGet]
         public IActionResult GetAll()
         {
-            var projects = _projectService.GetAll();
-            var response = projects.Select(_projectService.ToResponse).ToList();
-            return Ok(response);
+            var projects = _service.GetAll();
+            return Ok(projects.Select(_service.ToResponse));
         }
 
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {
-            var project = _projectService.GetById(id);
+            var project = _service.GetById(id);
             if (project == null)
             {
                 return NotFound();
             }
 
-            return Ok(_projectService.ToResponse(project));
+            return Ok(_service.ToResponse(project));
         }
 
         [HttpPost]
         public IActionResult Create(CreateProjectRequest request)
         {
-            var project = _projectService.Create(request);
-            return Created($"/api/projects/{project.Id}", _projectService.ToResponse(project));
+            var project = _service.Create(request);
+
+            return CreatedAtAction(
+                nameof(GetById), 
+                new { id = project.Id }, 
+                _service.ToResponse(project));
         }
 
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            var deleted  = _projectService.Delete(id);
+            var deleted  = _service.Delete(id);
 
             if (!deleted)
             {

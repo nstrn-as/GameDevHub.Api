@@ -45,15 +45,14 @@ public class ProjectService
 
     public bool Delete(int id)
     {
-        var context = _context.Projects.FirstOrDefault(p => p.Id == id);
+        var project = _context.Projects.FirstOrDefault(p => p.Id == id);
 
-        if (context == null)
+        if (project == null)
         {
             return false;
         }
-
-        _context.Projects.Remove(context);
-
+        
+        _context.Projects.Remove(project);
         _context.SaveChanges();
 
         return true;
