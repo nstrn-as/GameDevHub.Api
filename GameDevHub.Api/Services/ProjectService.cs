@@ -33,6 +33,26 @@ public class ProjectService
         return project;
     }
 
+    public bool Update(int id, UpdateProjectRequest request)
+    {
+        var project = _context.Projects.FirstOrDefault(p => p.Id == id);
+
+        if (project == null)
+        {
+            return false;
+        }
+
+        project.Title = request.Title;
+        project.Description = request.Description;
+        project.Engine = request.Engine;
+        project.Genre = request.Genre;
+        project.LastModified = DateTime.Now;
+
+        _context.SaveChanges();
+
+        return true;
+    }
+
     public IEnumerable<Project> GetAll()
     {
         return _context.Projects.ToList();

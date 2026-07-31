@@ -45,6 +45,17 @@ namespace GameDevHub.Api.Controllers
                 _service.ToResponse(project));
         }
 
+        [HttpPut("{id}")]
+        public IActionResult Update(int id, UpdateProjectRequest request)
+        {
+            var updated = _service.Update(id, request);
+
+            if (!updated)
+                return NotFound();
+
+            return NoContent();
+        }
+
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
