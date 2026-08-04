@@ -1,4 +1,6 @@
-﻿namespace GameDevHub.Api.DTOs
+﻿using GameDevHub.Api.Models;
+
+namespace GameDevHub.Api.DTOs
 {
     public class ProjectResponse
     {
@@ -7,5 +9,8 @@
         public string Description { get; set; } = "";
         public string Engine { get; set; } = "";
         public string Genre { get; set; } = "";
+        public ProjectStatus Status { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public DateTime LastModified { get; set; }
     }
 }

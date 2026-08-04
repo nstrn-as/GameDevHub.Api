@@ -30,6 +30,9 @@ public class ProjectService
 
         _context.SaveChanges();
 
+        Console.WriteLine(project.CreatedDate);
+        Console.WriteLine(project.LastModified);
+
         return project;
     }
 
@@ -86,7 +89,10 @@ public class ProjectService
             Title = project.Title,
             Description = project.Description,
             Engine = project.Engine,
-            Genre = project.Genre
+            Genre = project.Genre,
+            Status = project.Status,
+            CreatedDate = project.CreatedDate,
+            LastModified = project.LastModified
         };
     }
 }
