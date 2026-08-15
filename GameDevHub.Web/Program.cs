@@ -1,4 +1,5 @@
 using GameDevHub.Web.Components;
+using GameDevHub.Web.Services;
 
 namespace GameDevHub.Web
 {
@@ -11,6 +12,11 @@ namespace GameDevHub.Web
             // Add services to the container.
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
+
+            builder.Services.AddHttpClient<ProjectApiService>(client =>
+            {
+                client.BaseAddress = new Uri("https://localhost:7220/");
+            });
 
             var app = builder.Build();
 

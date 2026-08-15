@@ -9,10 +9,12 @@ namespace GameDevHub.Api.Controllers
     public class ProjectsController : ControllerBase
     {
         private readonly ProjectService _service;
-        
-        public ProjectsController(ProjectService service)
+        private readonly TaskService _taskService;
+
+        public ProjectsController(ProjectService service, TaskService taskService)
         {
             _service = service;
+            _taskService = taskService;
         }
 
         [HttpGet]
@@ -67,6 +69,27 @@ namespace GameDevHub.Api.Controllers
             }
 
             return NoContent();
+        }
+
+        [HttpGet("{projectId}/tasks")]
+        public IActionResult GetTasks(int projectId)
+        {
+            var tasks = _taskService.GetByProjectId(projectId);
+
+            return Ok(tasks);
+        }
+
+        [HttpPost("{projectId}/tasks")]
+        public IActionResult CreateTask(int projectId,CreateTaskRequest request)
+        {
+            var task = _taskService.Create(projectId, request);
+
+            if (task == null)
+            {
+                return NotFound();
+            }
+
+            return Created($"/api/tasks/{task.Id}", task);
         }
     }
 }

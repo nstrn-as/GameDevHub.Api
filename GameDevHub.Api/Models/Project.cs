@@ -10,5 +10,6 @@
         public ProjectStatus Status { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime LastModified { get; set; }
+        public List<TaskItem> Tasks { get; set; } = [];
     }
 }
