@@ -56,9 +56,50 @@ public class ProjectService
         return true;
     }
 
-    public IEnumerable<Project> GetAll()
+    public IEnumerable<ProjectResponse> GetAll(ProjectQueryRequest request)
     {
-        return _context.Projects.ToList();
+        IQueryable<Project> query = _context.Projects;
+
+        if (!string.IsNullOrWhiteSpace(request.Search))
+        {
+            query = query.Where(p =>
+                p.Title.Contains(request.Search) ||
+                p.Description.Contains(request.Search));
+        }
+
+        if (!string.IsNullOrWhiteSpace(request.Engine))
+        {
+            query = query.Where(p => p.Engine == request.Engine);
+        }
+
+        if (request.Status.HasValue)
+        {
+            query = query.Where(p => p.Status == request.Status.Value);
+        }
+
+        query = request.Sort?.ToLower() switch
+        {
+            "title" => request.Descending
+                ? query.OrderByDescending(p => p.Title)
+                : query.OrderBy(p => p.Title),
+
+            "createddate" => request.Descending
+                ? query.OrderByDescending(p => p.CreatedDate)
+                : query.OrderBy(p => p.CreatedDate),
+
+            "lastmodified" => request.Descending
+                ? query.OrderByDescending(p => p.LastModified)
+                : query.OrderBy(p => p.LastModified),
+
+            _ => query.OrderBy(p => p.Id)
+        };
+
+        var projects = query
+            .Skip((request.Page - 1) * request.PageSize)
+            .Take(request.PageSize)
+            .ToList();
+
+        return projects.Select(ToResponse);
     }
 
     public Project? GetById(int id)

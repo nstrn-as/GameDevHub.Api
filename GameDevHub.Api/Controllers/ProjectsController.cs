@@ -18,10 +18,12 @@ namespace GameDevHub.Api.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAll()
+        [HttpGet]
+        public IActionResult GetAll([FromQuery] ProjectQueryRequest request)
         {
-            var projects = _service.GetAll();
-            return Ok(projects.Select(_service.ToResponse));
+            var projects = _service.GetAll(request);
+
+            return Ok(projects);
         }
 
         [HttpGet("{id}")]
