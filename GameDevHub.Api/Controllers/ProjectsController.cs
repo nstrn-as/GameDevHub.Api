@@ -2,96 +2,82 @@
 using GameDevHub.Api.Services;
 using Microsoft.AspNetCore.Mvc;
 
-namespace GameDevHub.Api.Controllers
+namespace GameDevHub.Api.Controllers;
+
+[ApiController]
+[Route("api/[controller]")]
+public class ProjectsController : ControllerBase
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class ProjectsController : ControllerBase
+    private readonly ProjectService _service;
+
+    public ProjectsController(ProjectService service)
     {
-        private readonly ProjectService _service;
-        private readonly TaskService _taskService;
+        _service = service;
+    }
 
-        public ProjectsController(ProjectService service, TaskService taskService)
+    // GET: api/projects
+    [HttpGet]
+    public async Task<IActionResult> GetAll(
+        [FromQuery] ProjectQueryRequest request)
+    {
+        var projects = await _service.GetAllAsync(request);
+
+        return Ok(projects);
+    }
+
+    // GET: api/projects/5
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetById(int id)
+    {
+        var project = await _service.GetByIdAsync(id);
+
+        if (project == null)
         {
-            _service = service;
-            _taskService = taskService;
+            return NotFound();
         }
 
-        [HttpGet]
-        [HttpGet]
-        public IActionResult GetAll([FromQuery] ProjectQueryRequest request)
-        {
-            var projects = _service.GetAll(request);
+        return Ok(project);
+    }
 
-            return Ok(projects);
+    // POST: api/projects
+    [HttpPost]
+    public async Task<IActionResult> Create(
+        CreateProjectRequest request)
+    {
+        var project = await _service.CreateAsync(request);
+
+        return Created(
+            $"/api/projects/{project.Id}",
+            project);
+    }
+
+    // PUT: api/projects/5
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update(
+        int id,
+        UpdateProjectRequest request)
+    {
+        var updated = await _service.UpdateAsync(id, request);
+
+        if (!updated)
+        {
+            return NotFound();
         }
 
-        [HttpGet("{id}")]
-        public IActionResult GetById(int id)
-        {
-            var project = _service.GetById(id);
-            if (project == null)
-            {
-                return NotFound();
-            }
+        return NoContent();
+    }
 
-            return Ok(_service.ToResponse(project));
+    // DELETE: api/projects/5
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        var deleted = await _service.DeleteAsync(id);
+
+        if (!deleted)
+        {
+            return NotFound();
         }
 
-        [HttpPost]
-        public IActionResult Create(CreateProjectRequest request)
-        {
-            var project = _service.Create(request);
-
-            return CreatedAtAction(
-                nameof(GetById), 
-                new { id = project.Id }, 
-                _service.ToResponse(project));
-        }
-
-        [HttpPut("{id}")]
-        public IActionResult Update(int id, UpdateProjectRequest request)
-        {
-            var updated = _service.Update(id, request);
-
-            if (!updated)
-                return NotFound();
-
-            return NoContent();
-        }
-
-        [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
-        {
-            var deleted  = _service.Delete(id);
-
-            if (!deleted)
-            {
-                return NotFound();
-            }
-
-            return NoContent();
-        }
-
-        [HttpGet("{projectId}/tasks")]
-        public IActionResult GetTasks(int projectId)
-        {
-            var tasks = _taskService.GetByProjectId(projectId);
-
-            return Ok(tasks);
-        }
-
-        [HttpPost("{projectId}/tasks")]
-        public IActionResult CreateTask(int projectId,CreateTaskRequest request)
-        {
-            var task = _taskService.Create(projectId, request);
-
-            if (task == null)
-            {
-                return NotFound();
-            }
-
-            return Created($"/api/tasks/{task.Id}", task);
-        }
+        return NoContent();
     }
 }

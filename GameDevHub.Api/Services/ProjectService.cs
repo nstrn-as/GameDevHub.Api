@@ -1,6 +1,7 @@
 ﻿using GameDevHub.Api.Data;
 using GameDevHub.Api.DTOs;
 using GameDevHub.Api.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace GameDevHub.Api.Services;
 
@@ -13,53 +14,12 @@ public class ProjectService
         _context = context;
     }
 
-    public Project Create(CreateProjectRequest request)
-    {
-        var project = new Project
-        {
-            Title = request.Title,
-            Description = request.Description,
-            Engine = request.Engine,
-            Genre = request.Genre,
-            Status = ProjectStatus.Planning,
-            CreatedDate = DateTime.Now,
-            LastModified = DateTime.Now
-        };
-
-        _context.Projects.Add(project);
-
-        _context.SaveChanges();
-
-        Console.WriteLine(project.CreatedDate);
-        Console.WriteLine(project.LastModified);
-
-        return project;
-    }
-
-    public bool Update(int id, UpdateProjectRequest request)
-    {
-        var project = _context.Projects.FirstOrDefault(p => p.Id == id);
-
-        if (project == null)
-        {
-            return false;
-        }
-
-        project.Title = request.Title;
-        project.Description = request.Description;
-        project.Engine = request.Engine;
-        project.Genre = request.Genre;
-        project.LastModified = DateTime.Now;
-
-        _context.SaveChanges();
-
-        return true;
-    }
-
-    public IEnumerable<ProjectResponse> GetAll(ProjectQueryRequest request)
+    public async Task<IEnumerable<ProjectResponse>> GetAllAsync(
+        ProjectQueryRequest request)
     {
         IQueryable<Project> query = _context.Projects;
 
+        // Search
         if (!string.IsNullOrWhiteSpace(request.Search))
         {
             query = query.Where(p =>
@@ -67,16 +27,19 @@ public class ProjectService
                 p.Description.Contains(request.Search));
         }
 
+        // Filter by engine
         if (!string.IsNullOrWhiteSpace(request.Engine))
         {
             query = query.Where(p => p.Engine == request.Engine);
         }
 
+        // Filter by status
         if (request.Status.HasValue)
         {
             query = query.Where(p => p.Status == request.Status.Value);
         }
 
+        // Sorting
         query = request.Sort?.ToLower() switch
         {
             "title" => request.Descending
@@ -94,30 +57,85 @@ public class ProjectService
             _ => query.OrderBy(p => p.Id)
         };
 
-        var projects = query
+        // Pagination
+        var projects = await query
             .Skip((request.Page - 1) * request.PageSize)
             .Take(request.PageSize)
-            .ToList();
+            .ToListAsync();
 
         return projects.Select(ToResponse);
     }
 
-    public Project? GetById(int id)
+    public async Task<ProjectResponse?> GetByIdAsync(int id)
     {
-        return _context.Projects.FirstOrDefault(p => p.Id == id);
+        var project = await _context.Projects
+            .FirstOrDefaultAsync(p => p.Id == id);
+
+        if (project == null)
+        {
+            return null;
+        }
+
+        return ToResponse(project);
     }
 
-    public bool Delete(int id)
+    public async Task<ProjectResponse> CreateAsync(
+        CreateProjectRequest request)
     {
-        var project = _context.Projects.FirstOrDefault(p => p.Id == id);
+        var project = new Project
+        {
+            Title = request.Title,
+            Description = request.Description,
+            Engine = request.Engine,
+            Genre = request.Genre,
+            Status = ProjectStatus.Planning,
+            CreatedDate = DateTime.Now,
+            LastModified = DateTime.Now
+        };
+
+        _context.Projects.Add(project);
+
+        await _context.SaveChangesAsync();
+
+        return ToResponse(project);
+    }
+
+    public async Task<bool> UpdateAsync(
+        int id,
+        UpdateProjectRequest request)
+    {
+        var project = await _context.Projects
+            .FirstOrDefaultAsync(p => p.Id == id);
 
         if (project == null)
         {
             return false;
         }
-        
+
+        project.Title = request.Title;
+        project.Description = request.Description;
+        project.Engine = request.Engine;
+        project.Genre = request.Genre;
+        project.LastModified = DateTime.Now;
+
+        await _context.SaveChangesAsync();
+
+        return true;
+    }
+
+    public async Task<bool> DeleteAsync(int id)
+    {
+        var project = await _context.Projects
+            .FirstOrDefaultAsync(p => p.Id == id);
+
+        if (project == null)
+        {
+            return false;
+        }
+
         _context.Projects.Remove(project);
-        _context.SaveChanges();
+
+        await _context.SaveChangesAsync();
 
         return true;
     }

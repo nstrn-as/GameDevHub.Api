@@ -14,11 +14,28 @@ public class TaskService
         _context = context;
     }
 
-    public TaskResponse? Create(int projectId, CreateTaskRequest request)
+    public async Task<IEnumerable<TaskItem>> GetByProjectIdAsync(int projectId)
     {
-        var project = _context.Projects.FirstOrDefault(p => p.Id == projectId);
+        return await _context.Tasks
+            .Where(t => t.ProjectId == projectId)
+            .ToListAsync();
+    }
 
-        if (project == null)
+    public async Task<TaskItem?> GetByIdAsync(int id)
+    {
+        return await _context.Tasks
+            .FirstOrDefaultAsync(t => t.Id == id);
+    }
+
+    public async Task<TaskItem?> CreateAsync(
+        int projectId,
+        CreateTaskRequest request)
+    {
+        // Make sure the project exists
+        var projectExists = await _context.Projects
+            .AnyAsync(p => p.Id == projectId);
+
+        if (!projectExists)
         {
             return null;
         }
@@ -28,40 +45,22 @@ public class TaskService
             ProjectId = projectId,
             Title = request.Title,
             Description = request.Description,
-            IsCompleted = false,
-            CreatedDate = DateTime.Now,
-            LastModified = DateTime.Now
+            IsCompleted = false
         };
 
         _context.Tasks.Add(task);
-        _context.SaveChanges();
 
-        return ToResponse(task);
+        await _context.SaveChangesAsync();
+
+        return task;
     }
 
-    public IEnumerable<TaskResponse> GetByProjectId(int projectId)
+    public async Task<bool> UpdateAsync(
+        int id,
+        UpdateTaskRequest request)
     {
-        return _context.Tasks
-            .Where(t => t.ProjectId == projectId)
-            .Select(ToResponse)
-            .ToList();
-    }
-
-    public TaskResponse? GetById(int id)
-    {
-        var task = _context.Tasks.FirstOrDefault(t => t.Id == id);
-
-        if (task == null)
-        {
-            return null;
-        }
-
-        return ToResponse(task);
-    }
-
-    public bool Update(int id, UpdateTaskRequest request)
-    {
-        var task = _context.Tasks.FirstOrDefault(t => t.Id == id);
+        var task = await _context.Tasks
+            .FirstOrDefaultAsync(t => t.Id == id);
 
         if (task == null)
         {
@@ -71,16 +70,16 @@ public class TaskService
         task.Title = request.Title;
         task.Description = request.Description;
         task.IsCompleted = request.IsCompleted;
-        task.LastModified = DateTime.Now;
 
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
 
         return true;
     }
 
-    public bool Delete(int id)
+    public async Task<bool> DeleteAsync(int id)
     {
-        var task = _context.Tasks.FirstOrDefault(t => t.Id == id);
+        var task = await _context.Tasks
+            .FirstOrDefaultAsync(t => t.Id == id);
 
         if (task == null)
         {
@@ -88,22 +87,9 @@ public class TaskService
         }
 
         _context.Tasks.Remove(task);
-        _context.SaveChanges();
+
+        await _context.SaveChangesAsync();
 
         return true;
-    }
-
-    private static TaskResponse ToResponse(TaskItem task)
-    {
-        return new TaskResponse
-        {
-            Id = task.Id,
-            ProjectId = task.ProjectId,
-            Title = task.Title,
-            Description = task.Description,
-            IsCompleted = task.IsCompleted,
-            CreatedDate = task.CreatedDate,
-            LastModified = task.LastModified
-        };
     }
 }
