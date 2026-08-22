@@ -1,4 +1,5 @@
 import ProjectCard from "../components/ProjectCard";
+import ProjectForm from "../components/ProjectForm";
 
 function Dashboard() {
     return (
@@ -16,6 +17,8 @@ function Dashboard() {
                 engine="Godot"
                 genre="Strategy"
             />
+
+            <ProjectForm />
         </div>
     );
 }
