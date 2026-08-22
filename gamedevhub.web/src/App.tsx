@@ -1,17 +1,13 @@
+import Header from "./components/Header";
+import Sidebar from "./components/Sidebar";
+import Dashboard from "./pages/Dashboard";
+
 function App() {
     return (
         <div>
-            <h1>GameDevHub</h1>
-
-            <p>Your game development workspace</p>
-
-            <ul>
-                <li>Projects</li>
-                <li>Tasks</li>
-                <li>Design</li>
-                <li>Art</li>
-                <li>Music</li>
-            </ul>
+            <Header />
+            <Sidebar />
+            <Dashboard />
         </div>
     );
 }
