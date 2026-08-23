@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import ProjectCard from "../components/ProjectCard";
 import ProjectForm from "../components/ProjectForm";
-import { getProjects } from "../services/ProjectApiService";
+import {
+    getProjects,
+    deleteProject
+} from "../services/ProjectApiService";
 import type { Project } from "../types/Project";
 
 function Projects() {
@@ -25,6 +28,16 @@ function Projects() {
         }
     }
 
+    async function handleDelete(id: number) {
+        try {
+            await deleteProject(id);
+            await loadProjects();
+        } catch (error) {
+            console.error(error);
+            setError("Failed to delete project.");
+        }
+    }
+
     if (loading) {
         return <p>Loading projects...</p>;
     }
@@ -43,9 +56,11 @@ function Projects() {
                 {projects.map((project) => (
                     <ProjectCard
                         key={project.id}
+                        id={project.id}
                         title={project.title}
                         engine={project.engine}
                         genre={project.genre}
+                        onDelete={handleDelete}
                     />
                 ))}
             </div>
