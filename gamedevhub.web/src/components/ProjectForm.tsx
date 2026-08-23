@@ -1,20 +1,36 @@
 import { useState } from "react";
+import { createProject } from "../services/ProjectApiService";
 
-function ProjectForm() {
+interface ProjectFormProps {
+    onProjectCreated: () => void;
+}
+
+function ProjectForm({ onProjectCreated }: ProjectFormProps) {
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [engine, setEngine] = useState("");
     const [genre, setGenre] = useState("");
 
-    function handleSubmit(event: React.FormEvent) {
+    async function handleSubmit(event: React.FormEvent) {
         event.preventDefault();
 
-        console.log({
-            title,
-            description,
-            engine,
-            genre
-        });
+        try {
+            await createProject({
+                title,
+                description,
+                engine,
+                genre
+            });
+
+            setTitle("");
+            setDescription("");
+            setEngine("");
+            setGenre("");
+
+            onProjectCreated();
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     return (

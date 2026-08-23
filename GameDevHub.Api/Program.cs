@@ -13,6 +13,16 @@ namespace GameDevHub.Api
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("ReactPolicy", policy =>
+                {
+                    policy
+                        .WithOrigins("http://localhost:5173")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
+            });
             builder.Services.AddScoped<ProjectService>();
             builder.Services.AddScoped<TaskService>();
             builder.Services.AddDbContext<AppDbContext>(options =>
@@ -23,6 +33,7 @@ namespace GameDevHub.Api
             builder.Services.AddSwaggerGen();
 
             var app = builder.Build();
+            app.UseCors("ReactPolicy");
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
