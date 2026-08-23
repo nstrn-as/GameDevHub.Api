@@ -43,6 +43,31 @@ export async function createProject(project: {
     return await response.json();
 }
 
+export async function updateProject(
+    id: number,
+    project: {
+        title: string;
+        description: string;
+        engine: string;
+        genre: string;
+    }
+): Promise<void> {
+    const response = await fetch(`${API_URL}/${id}`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            id,
+            ...project
+        })
+    });
+
+    if (!response.ok) {
+        throw new Error("Failed to update project.");
+    }
+}
+
 export async function deleteProject(id: number): Promise<void> {
     const response = await fetch(`${API_URL}/${id}`, {
         method: "DELETE"

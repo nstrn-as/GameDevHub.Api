@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getProjectById } from "../services/ProjectApiService";
+import EditProjectForm from "../components/EditProjectForm";
 import type { Project } from "../types/Project";
 
 function ProjectDetails() {
@@ -9,6 +10,7 @@ function ProjectDetails() {
     const [project, setProject] = useState<Project | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+    const [editing, setEditing] = useState(false);
 
     useEffect(() => {
         loadProject();
@@ -36,6 +38,24 @@ function ProjectDetails() {
 
     if (!project) {
         return <p>Project not found.</p>;
+    }
+
+    if (editing) {
+        return (
+            <div>
+                <EditProjectForm
+                    project={project}
+                    onProjectUpdated={async () => {
+                        await loadProject();
+                        setEditing(false);
+                    }}
+                />
+
+                <button onClick={() => setEditing(false)}>
+                    Cancel
+                </button>
+            </div>
+        );
     }
 
     return (
@@ -71,6 +91,10 @@ function ProjectDetails() {
                 <strong>Last Modified:</strong>{" "}
                 {project.lastModified}
             </p>
+
+            <button onClick={() => setEditing(true)}>
+                Edit
+            </button>
         </div>
     );
 }
