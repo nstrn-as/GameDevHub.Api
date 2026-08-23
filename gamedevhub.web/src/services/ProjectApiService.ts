@@ -12,6 +12,16 @@ export async function getProjects(): Promise<Project[]> {
     return await response.json();
 }
 
+export async function getProjectById(id: number): Promise<Project> {
+    const response = await fetch(`${API_URL}/${id}`);
+
+    if (!response.ok) {
+        throw new Error("Failed to fetch project.");
+    }
+
+    return await response.json();
+}
+
 export async function createProject(project: {
     title: string;
     description: string;

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 interface ProjectCardProps {
     id: number;
@@ -22,6 +23,10 @@ function ProjectCard({
 
             <p>Engine: {engine}</p>
             <p>Genre: {genre}</p>
+
+            <Link to={`/projects/${id}`}>
+                View Project
+            </Link>
 
             <button onClick={() => onDelete(id)}>
                 Delete
