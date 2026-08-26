@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { getProjectById } from "../services/ProjectApiService";
 import EditProjectForm from "../components/EditProjectForm";
 import type { Project } from "../types/Project";
+import TaskList from "../components/TaskList";
 
 function ProjectDetails() {
     const { id } = useParams();
@@ -54,6 +55,7 @@ function ProjectDetails() {
                 <button onClick={() => setEditing(false)}>
                     Cancel
                 </button>
+
             </div>
         );
     }
@@ -95,6 +97,9 @@ function ProjectDetails() {
             <button onClick={() => setEditing(true)}>
                 Edit
             </button>
+
+            <TaskList projectId={project.id} />
+
         </div>
     );
 }
