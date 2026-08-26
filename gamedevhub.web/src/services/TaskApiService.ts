@@ -41,3 +41,44 @@ export async function createTask(task: {
 
     return await response.json();
 }
+
+export async function updateTask(
+    projectId: number,
+    taskId: number,
+    task: {
+        title: string;
+        description: string;
+        status: string;
+    }
+): Promise<void> {
+    const response = await fetch(
+        `${API_URL}/projects/${projectId}/tasks/${taskId}`,
+        {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(task)
+        }
+    );
+
+    if (!response.ok) {
+        throw new Error("Failed to update task.");
+    }
+}
+
+export async function deleteTask(
+    id: number,
+    projectId: number
+): Promise<void> {
+    const response = await fetch(
+        `${API_URL}/projects/${projectId}/tasks/${id}`,
+        {
+            method: "DELETE"
+        }
+    );
+
+    if (!response.ok) {
+        throw new Error("Failed to delete task.");
+    }
+}

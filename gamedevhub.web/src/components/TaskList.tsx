@@ -52,6 +52,23 @@ function TaskList({ projectId }: TaskListProps) {
                     <TaskCard
                         key={task.id}
                         task={task}
+                        onTaskUpdated={(updatedTask) => {
+                            setTasks((currentTasks) =>
+                                currentTasks.map((currentTask) =>
+                                    currentTask.id === updatedTask.id
+                                        ? updatedTask
+                                        : currentTask
+                                )
+                            );
+                        }}
+                        onTaskDeleted={(deletedId) => {
+                            setTasks((currentTasks) =>
+                                currentTasks.filter(
+                                    (currentTask) =>
+                                        currentTask.id !== deletedId
+                                )
+                            );
+                        }}
                     />
                 ))
             )}
