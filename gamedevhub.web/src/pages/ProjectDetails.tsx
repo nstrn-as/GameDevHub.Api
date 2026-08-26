@@ -99,7 +99,6 @@ function ProjectDetails() {
             </button>
 
             <TaskList projectId={project.id} />
-
         </div>
     );
 }

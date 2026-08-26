@@ -15,3 +15,29 @@ export async function getTasksByProject(
 
     return await response.json();
 }
+
+export async function createTask(task: {
+    title: string;
+    description: string;
+    projectId: number;
+}): Promise<Task> {
+    const response = await fetch(
+        `${API_URL}/projects/${task.projectId}/tasks`,
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                title: task.title,
+                description: task.description
+            })
+        }
+    );
+
+    if (!response.ok) {
+        throw new Error("Failed to create task.");
+    }
+
+    return await response.json();
+}
