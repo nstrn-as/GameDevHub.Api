@@ -111,6 +111,37 @@ function TaskCard({
 
             <p>Status: {task.status}</p>
 
+            <select
+                value={task.status}
+                onChange={async (event) => {
+                    const newStatus = event.target.value;
+
+                    try {
+                        await updateTask(
+                            task.projectId,
+                            task.id,
+                            {
+                                title: task.title,
+                                description: task.description,
+                                status: newStatus
+                            }
+                        );
+
+                        onTaskUpdated({
+                            ...task,
+                            status: newStatus
+                        });
+                    } catch (error) {
+                        console.error(error);
+                        setError("Failed to update status.");
+                    }
+                }}
+            >
+                <option value="Todo">Todo</option>
+                <option value="InProgress">In Progress</option>
+                <option value="Done">Done</option>
+            </select>
+
             {error && <p>{error}</p>}
 
             <button onClick={() => setEditing(true)}>

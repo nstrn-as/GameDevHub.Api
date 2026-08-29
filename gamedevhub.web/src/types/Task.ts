@@ -1,7 +1,9 @@
 export interface Task {
     id: number;
+    projectId: number;
     title: string;
     description: string;
     status: string;
-    projectId: number;
+    createdDate: string;
+    lastModified: string;
 }

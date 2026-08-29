@@ -44,9 +44,13 @@ function TaskForm({
             <h3>Add Task</h3>
 
             <div>
-                <label>Title</label>
+                <label htmlFor="task-title">
+                    Title
+                </label>
 
                 <input
+                    id="task-title"
+                    name="title"
                     value={title}
                     onChange={(event) =>
                         setTitle(event.target.value)
@@ -55,9 +59,13 @@ function TaskForm({
             </div>
 
             <div>
-                <label>Description</label>
+                <label htmlFor="task-description">
+                    Description
+                </label>
 
                 <textarea
+                    id="task-description"
+                    name="description"
                     value={description}
                     onChange={(event) =>
                         setDescription(event.target.value)

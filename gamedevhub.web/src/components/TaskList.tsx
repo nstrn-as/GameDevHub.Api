@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import type { Task } from "../types/Task";
 import { getTasksByProject } from "../services/TaskApiService";
-import TaskCard from "./TaskCard";
 import TaskForm from "./TaskForm";
+import TaskBoard from "./TaskBoard";
 
 interface TaskListProps {
     projectId: number;
@@ -45,33 +45,25 @@ function TaskList({ projectId }: TaskListProps) {
                 }}
             />
 
-            {tasks.length === 0 ? (
-                <p>No tasks yet.</p>
-            ) : (
-                tasks.map((task) => (
-                    <TaskCard
-                        key={task.id}
-                        task={task}
-                        onTaskUpdated={(updatedTask) => {
-                            setTasks((currentTasks) =>
-                                currentTasks.map((currentTask) =>
-                                    currentTask.id === updatedTask.id
-                                        ? updatedTask
-                                        : currentTask
-                                )
-                            );
-                        }}
-                        onTaskDeleted={(deletedId) => {
-                            setTasks((currentTasks) =>
-                                currentTasks.filter(
-                                    (currentTask) =>
-                                        currentTask.id !== deletedId
-                                )
-                            );
-                        }}
-                    />
-                ))
-            )}
+            <TaskBoard
+                tasks={tasks}
+                onTaskUpdated={(updatedTask) => {
+                    setTasks((currentTasks) =>
+                        currentTasks.map((task) =>
+                            task.id === updatedTask.id
+                                ? updatedTask
+                                : task
+                        )
+                    );
+                }}
+                onTaskDeleted={(id) => {
+                    setTasks((currentTasks) =>
+                        currentTasks.filter(
+                            (task) => task.id !== id
+                        )
+                    );
+                }}
+            />
         </section>
     );
 }

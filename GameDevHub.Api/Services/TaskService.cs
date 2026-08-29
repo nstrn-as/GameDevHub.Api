@@ -45,7 +45,9 @@ public class TaskService
             ProjectId = projectId,
             Title = request.Title,
             Description = request.Description,
-            IsCompleted = false
+            Status = TasksStatus.Todo,
+            CreatedDate = DateTime.Now,
+            LastModified = DateTime.Now
         };
 
         _context.Tasks.Add(task);
@@ -69,7 +71,8 @@ public class TaskService
 
         task.Title = request.Title;
         task.Description = request.Description;
-        task.IsCompleted = request.IsCompleted;
+        task.Status = request.Status;
+        task.LastModified = DateTime.Now;
 
         await _context.SaveChangesAsync();
 
