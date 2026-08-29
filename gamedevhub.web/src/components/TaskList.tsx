@@ -3,6 +3,7 @@ import type { Task } from "../types/Task";
 import { getTasksByProject } from "../services/TaskApiService";
 import TaskForm from "./TaskForm";
 import TaskBoard from "./TaskBoard";
+import "./TaskList.css";
 
 interface TaskListProps {
     projectId: number;
@@ -32,7 +33,7 @@ function TaskList({ projectId }: TaskListProps) {
     }
 
     return (
-        <section>
+        <section className="task-list">
             <h2>Tasks</h2>
 
             <TaskForm

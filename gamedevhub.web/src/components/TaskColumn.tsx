@@ -1,5 +1,6 @@
 import type { Task } from "../types/Task";
 import TaskCard from "./TaskCard";
+import "./TaskColumn.css";
 
 interface TaskColumnProps {
     title: string;
@@ -15,7 +16,7 @@ function TaskColumn({
     onTaskDeleted
 }: TaskColumnProps) {
     return (
-        <div>
+        <div className="task-column">
             <h2>{title}</h2>
 
             {tasks.length === 0 ? (

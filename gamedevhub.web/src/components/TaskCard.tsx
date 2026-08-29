@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { Task } from "../types/Task";
 import { deleteTask, updateTask } from "../services/TaskApiService";
+import "./TaskCard.css";
 
 interface TaskCardProps {
     task: Task;
@@ -73,7 +74,7 @@ function TaskCard({
 
     if (editing) {
         return (
-            <div>
+            <div className="task-card">
                 <input
                     value={title}
                     onChange={(event) =>
@@ -104,14 +105,20 @@ function TaskCard({
     }
 
     return (
-        <div>
+        <div className="task-card">
             <h3>{task.title}</h3>
 
             <p>{task.description}</p>
 
             <p>Status: {task.status}</p>
 
+            <label htmlFor={`task-status-${task.id}`}>
+                Status
+            </label>
+
             <select
+                id={`task-status-${task.id}`}
+                name="status"
                 value={task.status}
                 onChange={async (event) => {
                     const newStatus = event.target.value;

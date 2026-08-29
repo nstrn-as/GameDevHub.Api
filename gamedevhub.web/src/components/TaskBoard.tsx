@@ -1,5 +1,6 @@
 import type { Task } from "../types/Task";
 import TaskColumn from "./TaskColumn";
+import "./TaskBoard.css";
 
 interface TaskBoardProps {
     tasks: Task[];
@@ -25,7 +26,7 @@ function TaskBoard({
     );
 
     return (
-        <div>
+        <div className="task-board">
             <TaskColumn
                 title="Todo"
                 tasks={todoTasks}
