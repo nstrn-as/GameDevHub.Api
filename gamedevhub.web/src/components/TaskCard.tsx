@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { Task } from "../types/Task";
+import type { Task, TaskPriority } from "../types/Task";
 import { deleteTask, updateTask } from "../services/TaskApiService";
 import "./TaskCard.css";
 
@@ -17,11 +17,19 @@ function TaskCard({
     onDragStart
 }: TaskCardProps) {
     const [editing, setEditing] = useState(false);
-
     const [title, setTitle] = useState(task.title);
     const [description, setDescription] = useState(
         task.description
     );
+    const [priority, setPriority] =
+        useState<TaskPriority>(task.priority);
+
+    const [dueDate, setDueDate] =
+        useState(
+            task.dueDate
+                ? task.dueDate.substring(0, 10)
+                : ""
+        );
 
     const [error, setError] = useState("");
 
@@ -35,14 +43,18 @@ function TaskCard({
                 {
                     title,
                     description,
-                    status: task.status
+                    status: task.status,
+                    priority,
+                    dueDate: dueDate || null
                 }
             );
 
             onTaskUpdated({
                 ...task,
                 title,
-                description
+                description,
+                priority,
+                dueDate: dueDate || null
             });
 
             setEditing(false);
@@ -102,7 +114,42 @@ function TaskCard({
                 >
                     Cancel
                 </button>
-            </div>
+
+                <div>
+                        <label htmlFor={`priority-${task.id}`}>
+                            Priority
+                        </label>
+
+                        <select
+                            id={`priority-${task.id}`}
+                            value={priority}
+                            onChange={event =>
+                                setPriority(
+                                    event.target.value as TaskPriority
+                                )
+                            }
+                        >
+                            <option value="Low">Low</option>
+                            <option value="Medium">Medium</option>
+                            <option value="High">High</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label htmlFor={`due-date-${task.id}`}>
+                            Due date
+                        </label>
+
+                        <input
+                            id={`due-date-${task.id}`}
+                            type="date"
+                            value={dueDate}
+                            onChange={event =>
+                                setDueDate(event.target.value)
+                            }
+                        />
+                    </div>
+                </div>
         );
     }
 
@@ -121,6 +168,17 @@ function TaskCard({
             <label htmlFor={`task-status-${task.id}`}>
                 Status
             </label>
+
+            <p>
+                Priority: {task.priority}
+            </p>
+
+            {task.dueDate && (
+                <p>
+                    Due:{" "}
+                    {new Date(task.dueDate).toLocaleDateString()}
+                </p>
+            )}
 
             <select
                 id={`task-status-${task.id}`}

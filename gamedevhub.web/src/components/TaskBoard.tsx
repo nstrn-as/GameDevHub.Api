@@ -40,7 +40,9 @@ function TaskBoard({
                 {
                     title: draggedTask.title,
                     description: draggedTask.description,
-                    status: newStatus
+                    status: newStatus,
+                    priority: draggedTask.priority,
+                    dueDate: draggedTask.dueDate
                 }
             );
 

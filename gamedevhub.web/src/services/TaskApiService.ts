@@ -1,4 +1,8 @@
-import type { Task, TaskStatus } from "../types/Task";
+import type {
+    Task,
+    TaskPriority,
+    TaskStatus
+} from "../types/Task";
 
 const API_URL = "https://localhost:7172/api";
 
@@ -20,6 +24,8 @@ export async function createTask(task: {
     title: string;
     description: string;
     projectId: number;
+    priority: TaskPriority;
+    dueDate: string | null;
 }): Promise<Task> {
     const response = await fetch(
         `${API_URL}/projects/${task.projectId}/tasks`,
@@ -30,7 +36,9 @@ export async function createTask(task: {
             },
             body: JSON.stringify({
                 title: task.title,
-                description: task.description
+                description: task.description,
+                priority: task.priority,
+                dueDate: task.dueDate
             })
         }
     );
@@ -49,6 +57,8 @@ export async function updateTask(
         title: string;
         description: string;
         status: TaskStatus;
+        priority: TaskPriority;
+        dueDate: string | null;
     }
 ): Promise<void> {
     const response = await fetch(

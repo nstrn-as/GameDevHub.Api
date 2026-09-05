@@ -1,13 +1,16 @@
-﻿using GameDevHub.Api.Models;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using GameDevHub.Api.Models;
 
-namespace GameDevHub.Api.DTOs;
-
-public class UpdateTaskRequest
+namespace GameDevHub.Api.DTOs
 {
-    [Required]
-    [StringLength(100, MinimumLength = 3)]
-    public string Title { get; set; } = "";
-    public string Description { get; set; } = "";
-    public TasksStatus Status { get; set; }
+    public class UpdateTaskRequest
+    {
+        [Required]
+        [StringLength(100, MinimumLength = 1)]
+        public string Title { get; set; } = "";
+        public string Description { get; set; } = "";
+        public TasksStatus Status { get; set; }
+        public TaskPriority Priority { get; set; }
+        public DateTime? DueDate { get; set; }
+    }
 }

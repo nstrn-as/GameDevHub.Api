@@ -46,8 +46,10 @@ public class TaskService
             Title = request.Title,
             Description = request.Description,
             Status = TasksStatus.Todo,
-            CreatedDate = DateTime.Now,
-            LastModified = DateTime.Now
+            Priority = request.Priority,
+            DueDate = request.DueDate,
+            CreatedDate = DateTime.UtcNow,
+            LastModified = DateTime.UtcNow
         };
 
         _context.Tasks.Add(task);
@@ -72,7 +74,9 @@ public class TaskService
         task.Title = request.Title;
         task.Description = request.Description;
         task.Status = request.Status;
-        task.LastModified = DateTime.Now;
+        task.Priority = request.Priority;
+        task.DueDate = request.DueDate;
+        task.LastModified = DateTime.UtcNow;
 
         await _context.SaveChangesAsync();
 

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { createTask } from "../services/TaskApiService";
-import type { Task } from "../types/Task";
+import type { Task, TaskPriority } from "../types/Task";
 
 interface TaskFormProps {
     projectId: number;
@@ -11,8 +11,12 @@ function TaskForm({
     projectId,
     onTaskCreated
 }: TaskFormProps) {
+
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
+    const [priority, setPriority] =
+        useState<TaskPriority>("Medium");
+    const [dueDate, setDueDate] = useState("");
     const [error, setError] = useState("");
 
     async function handleSubmit(
@@ -26,13 +30,18 @@ function TaskForm({
             const task = await createTask({
                 title,
                 description,
-                projectId
+                projectId,
+                priority,
+                dueDate: dueDate || null
             });
 
             onTaskCreated(task);
 
             setTitle("");
             setDescription("");
+            setPriority("Medium");
+            setDueDate("");
+
         } catch (error) {
             console.error(error);
             setError("Failed to create task.");
@@ -50,9 +59,8 @@ function TaskForm({
 
                 <input
                     id="task-title"
-                    name="title"
                     value={title}
-                    onChange={(event) =>
+                    onChange={event =>
                         setTitle(event.target.value)
                     }
                 />
@@ -65,10 +73,44 @@ function TaskForm({
 
                 <textarea
                     id="task-description"
-                    name="description"
                     value={description}
-                    onChange={(event) =>
+                    onChange={event =>
                         setDescription(event.target.value)
+                    }
+                />
+            </div>
+
+            <div>
+                <label htmlFor="task-priority">
+                    Priority
+                </label>
+
+                <select
+                    id="task-priority"
+                    value={priority}
+                    onChange={event =>
+                        setPriority(
+                            event.target.value as TaskPriority
+                        )
+                    }
+                >
+                    <option value="Low">Low</option>
+                    <option value="Medium">Medium</option>
+                    <option value="High">High</option>
+                </select>
+            </div>
+
+            <div>
+                <label htmlFor="task-due-date">
+                    Due date
+                </label>
+
+                <input
+                    id="task-due-date"
+                    type="date"
+                    value={dueDate}
+                    onChange={event =>
+                        setDueDate(event.target.value)
                     }
                 />
             </div>
