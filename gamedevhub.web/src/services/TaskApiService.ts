@@ -1,4 +1,4 @@
-import type { Task } from "../types/Task";
+import type { Task, TaskStatus } from "../types/Task";
 
 const API_URL = "https://localhost:7172/api";
 
@@ -48,7 +48,7 @@ export async function updateTask(
     task: {
         title: string;
         description: string;
-        status: string;
+        status: TaskStatus;
     }
 ): Promise<void> {
     const response = await fetch(

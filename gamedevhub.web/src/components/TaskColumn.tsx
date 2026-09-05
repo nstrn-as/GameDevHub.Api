@@ -1,40 +1,37 @@
-import type { Task } from "../types/Task";
+import type { Task, TaskStatus } from "../types/Task";
 import TaskCard from "./TaskCard";
 import "./TaskColumn.css";
 
 interface TaskColumnProps {
     title: string;
+    status: TaskStatus;
     tasks: Task[];
-    status: string;
     onTaskUpdated: (task: Task) => void;
     onTaskDeleted: (id: number) => void;
+    onDrop: (status: TaskStatus) => void;
     onDragStart: (task: Task) => void;
-    onDrop: (status: string) => void;
 }
 
 function TaskColumn({
     title,
-    tasks,
     status,
+    tasks,
     onTaskUpdated,
     onTaskDeleted,
-    onDragStart,
-    onDrop
+    onDrop,
+    onDragStart
 }: TaskColumnProps) {
+
     return (
         <div
             className="task-column"
-            onDragOver={(event) => {
-                event.preventDefault();
-            }}
+            onDragOver={(event) => event.preventDefault()}
             onDrop={() => onDrop(status)}
         >
             <h2>{title}</h2>
 
-            {tasks.length === 0 ? (
-                <p>No tasks.</p>
-            ) : (
-                tasks.map((task) => (
+            <div className="task-column-content">
+                {tasks.map(task => (
                     <TaskCard
                         key={task.id}
                         task={task}
@@ -42,8 +39,8 @@ function TaskColumn({
                         onTaskDeleted={onTaskDeleted}
                         onDragStart={onDragStart}
                     />
-                ))
-            )}
+                ))}
+            </div>
         </div>
     );
 }

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { Task } from "../types/Task";
+import type { Task, TaskStatus } from "../types/Task";
 import { updateTask } from "../services/TaskApiService";
 import TaskColumn from "./TaskColumn";
 import "./TaskBoard.css";
@@ -23,7 +23,7 @@ function TaskBoard({
         setDraggedTask(task);
     }
 
-    async function handleDrop(newStatus: string) {
+    async function handleDrop(newStatus: TaskStatus) {
         if (!draggedTask) {
             return;
         }
@@ -48,6 +48,7 @@ function TaskBoard({
                 ...draggedTask,
                 status: newStatus
             });
+
         } catch (error) {
             console.error(error);
         }
@@ -56,15 +57,15 @@ function TaskBoard({
     }
 
     const todoTasks = tasks.filter(
-        (task) => task.status === "Todo"
+        task => task.status === "Todo"
     );
 
     const inProgressTasks = tasks.filter(
-        (task) => task.status === "InProgress"
+        task => task.status === "InProgress"
     );
 
     const doneTasks = tasks.filter(
-        (task) => task.status === "Done"
+        task => task.status === "Done"
     );
 
     return (
