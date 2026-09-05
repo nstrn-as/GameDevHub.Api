@@ -5,8 +5,16 @@
     min-height: 300px;
 }
 
-    .task-column h2 {
-        margin-top: 0;
-        margin-bottom: 16px;
-        font-size: 18px;
-    }
+.task-column h2 {
+    margin-top: 0;
+    margin-bottom: 16px;
+    font-size: 18px;
+}
+
+.task-column {
+    transition: transform 0.15s ease;
+}
+
+.task-column:hover {
+    transform: translateY(-2px);
+}

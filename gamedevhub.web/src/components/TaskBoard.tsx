@@ -1,4 +1,6 @@
+import { useState } from "react";
 import type { Task } from "../types/Task";
+import { updateTask } from "../services/TaskApiService";
 import TaskColumn from "./TaskColumn";
 import "./TaskBoard.css";
 
@@ -13,6 +15,46 @@ function TaskBoard({
     onTaskUpdated,
     onTaskDeleted
 }: TaskBoardProps) {
+
+    const [draggedTask, setDraggedTask] =
+        useState<Task | null>(null);
+
+    function handleDragStart(task: Task) {
+        setDraggedTask(task);
+    }
+
+    async function handleDrop(newStatus: string) {
+        if (!draggedTask) {
+            return;
+        }
+
+        if (draggedTask.status === newStatus) {
+            setDraggedTask(null);
+            return;
+        }
+
+        try {
+            await updateTask(
+                draggedTask.projectId,
+                draggedTask.id,
+                {
+                    title: draggedTask.title,
+                    description: draggedTask.description,
+                    status: newStatus
+                }
+            );
+
+            onTaskUpdated({
+                ...draggedTask,
+                status: newStatus
+            });
+        } catch (error) {
+            console.error(error);
+        }
+
+        setDraggedTask(null);
+    }
+
     const todoTasks = tasks.filter(
         (task) => task.status === "Todo"
     );
@@ -27,26 +69,37 @@ function TaskBoard({
 
     return (
         <div className="task-board">
+
             <TaskColumn
                 title="Todo"
+                status="Todo"
                 tasks={todoTasks}
                 onTaskUpdated={onTaskUpdated}
                 onTaskDeleted={onTaskDeleted}
+                onDrop={handleDrop}
+                onDragStart={handleDragStart}
             />
 
             <TaskColumn
                 title="In Progress"
+                status="InProgress"
                 tasks={inProgressTasks}
                 onTaskUpdated={onTaskUpdated}
                 onTaskDeleted={onTaskDeleted}
+                onDrop={handleDrop}
+                onDragStart={handleDragStart}
             />
 
             <TaskColumn
                 title="Done"
+                status="Done"
                 tasks={doneTasks}
                 onTaskUpdated={onTaskUpdated}
                 onTaskDeleted={onTaskDeleted}
+                onDrop={handleDrop}
+                onDragStart={handleDragStart}
             />
+
         </div>
     );
 }

@@ -7,12 +7,14 @@ interface TaskCardProps {
     task: Task;
     onTaskUpdated: (task: Task) => void;
     onTaskDeleted: (id: number) => void;
+    onDragStart: (task: Task) => void;
 }
 
 function TaskCard({
     task,
     onTaskUpdated,
-    onTaskDeleted
+    onTaskDeleted,
+    onDragStart
 }: TaskCardProps) {
     const [editing, setEditing] = useState(false);
 
@@ -105,7 +107,11 @@ function TaskCard({
     }
 
     return (
-        <div className="task-card">
+        <div
+            className="task-card"
+            draggable
+            onDragStart={() => onDragStart(task)}
+        >
             <h3>{task.title}</h3>
 
             <p>{task.description}</p>

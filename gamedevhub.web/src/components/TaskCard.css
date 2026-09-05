@@ -5,22 +5,30 @@
     margin-bottom: 12px;
 }
 
-    .task-card h3 {
-        margin-top: 0;
-        margin-bottom: 8px;
-    }
+.task-card h3 {
+    margin-top: 0;
+    margin-bottom: 8px;
+}
 
-    .task-card p {
-        margin: 6px 0;
-    }
+.task-card p {
+    margin: 6px 0;
+}
 
-    .task-card button {
-        margin-right: 8px;
-        margin-top: 10px;
-    }
+.task-card button {
+    margin-right: 8px;
+    margin-top: 10px;
+}
 
-    .task-card select {
-        margin-top: 8px;
-        padding: 6px;
-        border-radius: 6px;
+.task-card select {
+    margin-top: 8px;
+    padding: 6px;
+    border-radius: 6px;
+}
+
+.task-card {
+    cursor: grab;
+}
+
+    .task-card:active {
+        cursor: grabbing;
     }
